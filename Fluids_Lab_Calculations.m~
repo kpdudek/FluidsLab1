@@ -27,8 +27,18 @@ SP_Full_SF_low2 = 165.7;
 A = area(D_s);
 L = in_to_m(96);
 
-[f_t,f_e] = solve_friction_factors(SP_Full_SF_high,SP_Full_SF_low,SF,A,L,rho,D_s,mu);
-
+f_t = [];
+f_e = [];
+for i = 2:length(SP_Full_SF_high)
+    dp = delta_P(SP_Full_SF_high(i),SP_Full_SF_low(i),1);
+    Q = flow_convert(SF(i-1));
+    V = velocity(Q,A);
+    re = reynolds(rho,V,D_s,mu);
+    fe = f_exp(dp,D_s,L,rho,V);
+    ft = f_theorey(re);
+    f_t = [f_t,ft];
+    f_e = [f_e,fe];
+end
 dp = delta_P(SP_Full_SF_high2,SP_Full_SF_low2,0);
 Q = flow_convert(SF(end));
 V = velocity(Q,A);
@@ -45,7 +55,18 @@ SP_Full_MF_low = [176.6,175,169.5,155.1,129.5];
 A = area(D_s);
 L = in_to_m(96);
 
-[f_t,f_e] = solve_friction_factors(high,low,flow,A,L,rho,D,mu)
+f_t = [];
+f_e = [];
+for i = 2:length(SP_Full_MF_high)
+    dp = delta_P(SP_Full_MF_high(i),SP_Full_MF_low(i),0);
+    Q = flow_convert(MF_SP(i-1));
+    V = velocity(Q,A);
+    re = reynolds(rho,V,D_s,mu);
+    fe = f_exp(dp,D_s,L,rho,V);
+    ft = f_theorey(re);
+    f_t = [f_t,ft];
+    f_e = [f_e,fe];
+end
 
 function [f_t,f_e] = SP_Up_SF(D_s,rho,SF,mu)
 SP_Up_SF_high = [43.3,43.7,44,44.2,44.4,44.5,45.7,46.9,50.9,55.4]; %Flag 1
@@ -74,7 +95,18 @@ SP_Up_MF_low = [176.8,176.4,174.6,169,159.5];
 A = area(D_s);
 L = in_to_m(48);
 
-[f_t,f_e] = solve_friction_factors(SP_Up_MF_high,SP_Up_MF_low,MF_SP,A,L,rho,D_s,mu);
+f_t = [];
+f_e = [];
+for i = 2:length(SP_Up_MF_high)
+    dp = delta_P(SP_Up_MF_high(i),SP_Up_MF_low(i),1);
+    Q = flow_convert(MF_SP(i-1));
+    V = velocity(Q,A);
+    re = reynolds(rho,V,D_s,mu);
+    fe = f_exp(dp,D_s,L,rho,V);
+    ft = f_theorey(re);
+    f_t = [f_t,ft];
+    f_e = [f_e,fe];
+end
 
 function [f_t,f_e] = SP_Dn_SF(D_s,rho,SF,mu)
 SP_Dn_SF_high = [41.6,41.9,42.1,42.3,42.6,42.8,44.2,45.6,49.2,54.5]; %Flag 1
@@ -93,14 +125,14 @@ LP_LF_high = [176.2,178.4,182.9,188.7,197.8,221.8];
 LP_LF_low = [176.4,175.9,171.5,165,157,138.2];
 
 
-function [f_t,f_e] = solve_friction_factors(high,low,flow,A,L,rho,D,mu)
+function [f_t,f_e] = solve_friction_factors(high,low,flow,A,L,D)
 f_t = [];
 f_e = [];
 for i = 2:length(high)
     dp = delta_P(high(i),low(i),1);
     Q = flow_convert(flow(i-1));
     V = velocity(Q,A);
-    re = reynolds(rho,V,D,mu);
+    re = reynolds(rho,V,D_s,mu);
     fe = f_exp(dp,D,L,rho,V);
     ft = f_theorey(re);
     f_t = [f_t,ft];
