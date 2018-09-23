@@ -44,7 +44,7 @@ disp(SPDMFRe)
 % disp(LPLFf_e)
 
 
-figure('Visible','on','Name','deltaP vs V')
+figure('Visible','on','Name','\deltaP vs V')
 smFdp = [SPSFdp,SPMFdp];
 smFV = [SPSFV,SPMFV];
 smUPdp = [SPUSFdp,SPUMFdp];
@@ -53,26 +53,30 @@ smDNdp = [SPDSFdp,SPDMFdp];
 smDNV = [SPDSFV,SPDMFV];
 lgdp = [LPMFdp,LPLFdp];
 lgV = [LPMFV,LPLFV];
-plot(smFdp,smFV,'+-',smUPdp,smUPV,'+-',smDNdp,smDNV,'+-',lgdp,lgV,'+-')
+plot(smFdp,smFV,'+-',smUPdp,smUPV,'o-',smDNdp,smDNV,'*-',lgdp,lgV,'s-')
 legend('Small Pipe Full','Small Pipe Upstream','Small Pipe Downstream','Large Pipe','Location','Northwest')
 title('\DeltaP vs. Velocity')
 xlabel('\DeltaP (Pa)')
 ylabel('Velocity (m/s)')
 
-figure('Visible','on','Name','\f_exp vs. Re')
+figure('Visible','on','Name','f_exp vs. Re')
+smDNfe = log10([SPDSFf_e,SPDMFf_e]);
+smDNft = log10([SPDSFf_t,SPDMFf_t]);
+smDNRe = log10([SPDSFRe,SPDMFRe]);
+lgfe = log10([LPMFf_e,LPLFf_e]);
+lgft = log10([LPMFf_t,LPLFf_t]);
+lgRe = log10([LPMFRe,LPLFRe]);
+plot(smDNfe,smDNRe,'+-',smDNft,smDNRe,'s-',lgfe,lgRe,'o-',lgft,lgRe,'*-') %smFfe,smFRe,'+-',smUPfe,smUPRe,'+-',
+legend('Small Downstream f_e_x_p','Small Downstream f_t_h_e_o_r_y','Large','Large f_t_h_e_o_r_y','Location','Northwest')
+title('f_e_x_p vs. Reynolds Number')
+xlabel('log(f_e_x_p)')
+ylabel('log(Re)')
+
+
 smFfe = log10([SPSFf_e,SPMFf_e]);
 smFRe = log10([SPSFRe,SPMFRe]);
 smUPfe = log10([SPUSFf_e,SPUMFf_e]);
 smUPRe = log10([SPUSFRe,SPUMFRe]);
-smDNfe = log10([SPDSFf_e,SPDMFf_e]);
-smDNRe = log10([SPDSFRe,SPDMFRe]);
-lgfe = log10([LPMFf_e,LPLFf_e]);
-lgRe = log10([LPMFRe,LPLFRe]);
-plot(smDNfe,smDNRe,'+-',lgfe,lgRe,'+-') %smFfe,smFRe,'+-',smUPfe,smUPRe,'+-',
-legend('Small Pipe Full','Small Pipe Upstream','Small Pipe Downstream','Large Pipe','Location','Northwest')
-title('f_e_x_p vs. Reynolds Number')
-xlabel('f_e_x_p')
-ylabel('Reynolds Number')
 
 
 %%% Functions to solve for Friction factor %%%
