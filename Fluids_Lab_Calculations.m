@@ -15,29 +15,33 @@ LF = [1.06,1.93,3.01,4.08,5.98];
 
 %%% Function Calls %%%%
 [SPSFf_t,SPSFf_e,SPSFRe,SPSFV,SPSFdp] = SP_Full_SF(D_s,rho,SF,mu);
-disp(SPSFf_t)
-disp(SPSFf_e)
+% disp(SPSFf_t)
+% disp(SPSFf_e)
 [SPMFf_t,SPMFf_e,SPMFRe,SPMFV,SPMFdp] = SP_Full_MF(D_s,rho,MF_SP,mu);
-disp(SPMFf_t)
-disp(SPMFf_e)
+% disp(SPMFf_t)
+% disp(SPMFf_e)
 [SPUSFf_t,SPUSFf_e,SPUSFRe,SPUSFV,SPUSFdp] = SP_Up_SF(D_s,rho,SF,mu);
-disp(SPUSFf_t)
-disp(SPUSFf_e)
+% disp(SPUSFf_t)
+% disp(SPUSFf_e)
+disp(SPUSFRe)
 [SPUMFf_t,SPUMFf_e,SPUMFRe,SPUMFV,SPUMFdp] = SP_Up_MF(D_s,rho,MF_SP,mu);
-disp(SPUMFf_t)
-disp(SPUMFf_e)
+% disp(SPUMFf_t)
+% disp(SPUMFf_e)
+disp(SPUMFRe)
 [SPDSFf_t,SPDSFf_e,SPDSFRe,SPDSFV,SPDSFdp] = SP_Dn_SF(D_s,rho,SF,mu);
-disp(SPDSFf_t)
-disp(SPDSFf_e)
+% disp(SPDSFf_t)
+% disp(SPDSFf_e)
+disp(SPDSFRe)
 [SPDMFf_t,SPDMFf_e,SPDMFRe,SPDMFV,SPDMFdp] = SP_Dn_MF(D_s,rho,MF_SP,mu);
-disp(SPDMFf_t)
-disp(SPDMFf_e)
+% disp(SPDMFf_t)
+% disp(SPDMFf_e)
+disp(SPDMFRe)
 [LPMFf_t,LPMFf_e,LPMFRe,LPMFV,LPMFdp] = LP_MF(D_l,rho,MF_LP,mu);
-disp(LPMFf_t)
-disp(LPMFf_e)
+% disp(LPMFf_t)
+% disp(LPMFf_e)
 [LPLFf_t,LPLFf_e,LPLFRe,LPLFV,LPLFdp] = LP_LF(D_l,rho,LF,mu);
-disp(LPLFf_t)
-disp(LPLFf_e)
+% disp(LPLFf_t)
+% disp(LPLFf_e)
 
 
 figure('Visible','on','Name','deltaP vs V')
@@ -54,6 +58,21 @@ legend('Small Pipe Full','Small Pipe Upstream','Small Pipe Downstream','Large Pi
 title('\DeltaP vs. Velocity')
 xlabel('\DeltaP (Pa)')
 ylabel('Velocity (m/s)')
+
+figure('Visible','on','Name','\f_exp vs. Re')
+smFfe = log10([SPSFf_e,SPMFf_e]);
+smFRe = log10([SPSFRe,SPMFRe]);
+smUPfe = log10([SPUSFf_e,SPUMFf_e]);
+smUPRe = log10([SPUSFRe,SPUMFRe]);
+smDNfe = log10([SPDSFf_e,SPDMFf_e]);
+smDNRe = log10([SPDSFRe,SPDMFRe]);
+lgfe = log10([LPMFf_e,LPLFf_e]);
+lgRe = log10([LPMFRe,LPLFRe]);
+plot(smDNfe,smDNRe,'+-',lgfe,lgRe,'+-') %smFfe,smFRe,'+-',smUPfe,smUPRe,'+-',
+legend('Small Pipe Full','Small Pipe Upstream','Small Pipe Downstream','Large Pipe','Location','Northwest')
+title('f_e_x_p vs. Reynolds Number')
+xlabel('f_e_x_p')
+ylabel('Reynolds Number')
 
 
 %%% Functions to solve for Friction factor %%%
@@ -76,7 +95,7 @@ Vo = [V,V1];
 re1 = reynolds(rho,V1,D_s,mu);
 Reo = [Re,re1];
 fe1 = f_exp(dp1,D_s,L,rho,V1);
-ft1 = f_theorey(re1);
+ft1 = f_theorey(re1,D_s);
 f_t = [f_t,ft1];
 f_e = [f_e,fe1];
 
@@ -163,7 +182,7 @@ for i = 2:length(high)
     re = reynolds(rho,V,D,mu);
     reo = [reo,re];
     fe = f_exp(dp,D,L,rho,V);
-    ft = f_theorey(re);
+    ft = f_theorey(re,D);
     f_t = [f_t,ft];
     f_e = [f_e,fe];
 end
@@ -195,8 +214,14 @@ out = Q/A;
 function out = reynolds(rho,V,D,mu)
 out = (rho * V * D) / mu;
 
-function out = f_theorey(re)
-out = 64/re;
+function out = f_theorey(re,D)
+if re > 2000
+    E = .0015;
+    denom = -1.8 * log10(6.9/re); %((E/D)/3.7)^1.11 + 
+    out = (1/denom)^2;
+else
+    out = 64/re;
+end
 
 function out = f_exp(delt,D,L,rho,V)
 out = (2* delt * D) / (L * rho * V^2);
