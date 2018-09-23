@@ -49,11 +49,9 @@ smDNdp = [SPDSFdp,SPDMFdp];
 smDNV = [SPDSFV,SPDMFV];
 lgdp = [LPMFdp,LPLFdp];
 lgV = [LPMFV,LPLFV];
-plot(smFdp,smFV,'+-',smUPdp,smUPV,'+-',smDNdp,smDNV,'+-',lgdp,lgV,'+-')
+plot(smFdp,smFV,smUPdp,smUPV,smDNdp,smDNV,lgdp,lgV)
 legend('Small Pipe Full','Small Pipe Upstream','Small Pipe Downstream','Large Pipe','Location','Northwest')
-title('\DeltaP vs. Velocity')
-xlabel('\DeltaP (Pa)')
-ylabel('Velocity (m/s)')
+title('\delta P
 
 
 %%% Functions to solve for Friction factor %%%
